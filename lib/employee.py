@@ -148,7 +148,7 @@ class Employee:
             employee.id = row[0]
             cls.all[employee.id] = employee
         return employee
-
+    
     @classmethod
     def get_all(cls):
         """Return a list containing one Employee object per table row"""
@@ -186,5 +186,8 @@ class Employee:
         return cls.instance_from_db(row) if row else None
 
     def reviews(self):
-        """Return list of reviews associated with current employee"""
-        pass
+        """Return a list of reviews associated with the current employee."""
+        from review import Review  # Import inside the method to avoid circular import
+        CURSOR.execute("SELECT * FROM reviews WHERE employee_id=?", (self.id,))
+        rows = CURSOR.fetchall()
+        return [Review.instance_from_db(row) for row in rows]
